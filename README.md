@@ -1,50 +1,69 @@
-# 📚 Library Management System
+# Library Management System
 
-A modern **Library Management System** developed as part of the **Database Management Systems (DBMS)** course. This project provides an efficient way to manage library operations such as book management, member management, issuing and returning books, and maintaining library records using PostgreSQL.
+## Overview
 
----
+The Library Management System is a database-driven application developed as part of the **Database Management Systems (DBMS)** course. It streamlines the management of library operations by providing a centralized platform for handling books, members, borrowing records, and related administrative tasks.
 
-## 📖 Project Overview
-
-The Library Management System is designed to simplify and automate day-to-day library operations. It enables librarians to manage books, members, borrowing records, and overdue fines through an intuitive and responsive user interface.
+Designed with PostgreSQL as the underlying database, the system emphasizes data integrity, efficient record management, and an intuitive user interface.
 
 ---
 
-## ✨ Features
+## Objectives
 
-- 🔐 Secure User Authentication (Admin/Librarian/Member)
-- 📚 Book Management (Add, Update, Delete, Search)
-- 👥 Member Management
-- 📖 Issue and Return Books
-- 💰 Fine Calculation for Overdue Books
-- 📊 Dashboard with Library Statistics
-- 🔍 Search and Filter Books
-- 📑 Report Generation
+The project aims to:
+
+* Digitize routine library operations.
+* Maintain accurate records of books and members.
+* Simplify book issue and return processes.
+* Reduce manual effort and improve operational efficiency.
+* Ensure consistency and integrity of library data through a relational database.
 
 ---
 
-## 🛠️ Tech Stack
+## Key Features
+
+* Secure authentication for administrators, librarians, and members
+* Book catalog management with search and filtering capabilities
+* Member registration and management
+* Book issue and return management
+* Automatic overdue fine calculation
+* Dashboard displaying key library statistics
+* Report generation and record tracking
+* Responsive and user-friendly interface
+
+---
+
+## Technology Stack
 
 ### Frontend
-- HTML5
-- CSS3
-- JavaScript
 
-### Backend
-- PostgreSQL
+* HTML5
+* CSS3
+* JavaScript
 
-### Tools Used
-- Visual Studio Code
-- Git & GitHub
-- ChatGPT (GPT-5.5)
-- Claude Sonnet 5
-- Antigravity AI
+### Database
+
+* PostgreSQL
+
+### Development Tools
+
+* Visual Studio Code
+* Git
+* GitHub
+
+### AI-Assisted Development
+
+The following AI tools were used to accelerate UI design, documentation, and frontend development:
+
+* ChatGPT (GPT-5.5)
+* Claude Sonnet 5
+* Antigravity AI
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
-```
+```text
 Library-Management-System/
 │
 ├── index.html
@@ -72,58 +91,75 @@ Library-Management-System/
 
 ---
 
-## 🚀 Getting Started
+## Functional Requirements
 
-1. Clone the repository
+* User Authentication
+* Book Management
+* Member Management
+* Book Issue Management
+* Book Return Management
+* Search and Filter Operations
+* Fine Management
+* Report Generation
+
+---
+
+## Non-Functional Requirements
+
+* Responsive and intuitive user interface
+* Role-based access control
+* Fast and reliable system performance
+* Data consistency and integrity
+* Scalable architecture for future enhancements
+* Secure handling of user information
+
+---
+
+## Installation
+
+1. Clone the repository.
 
 ```bash
 git clone https://github.com/your-username/library-management-system.git
 ```
 
-2. Open the project folder.
+2. Navigate to the project directory.
 
-3. Open `index.html` in your browser.
+3. Open the frontend files using a web browser or a local development server.
 
-4. Configure PostgreSQL and connect it to the backend (if applicable).
-
----
-
-## 📌 Functional Requirements
-
-- User Authentication
-- Book Management
-- Member Management
-- Book Issue & Return Management
+4. Configure PostgreSQL and connect the application to the database.
 
 ---
 
-## 📌 Non-Functional Requirements
+## Team Members
 
-- User-friendly and Responsive Interface
-- Secure Role-based Access
-- Fast and Reliable Performance
-- Consistent User Interface
-
----
-
-## 👨‍💻 Team Members
-
-| Roll No | Name |
-|----------|------|
-| AM.SC.U4CSE25349 | Siddharth S |
+| Roll Number      | Name           |
+| ---------------- | -------------- |
+| AM.SC.U4CSE25349 | Siddharth S    |
 | AM.SC.U4CSE25324 | Jeevan A Jacob |
-| AM.SC.U4CSE25342 | Prithew J Raj |
+| AM.SC.U4CSE25342 | Prithew J Raj  |
 
 ---
 
-## 📚 Course
+## Academic Information
 
-**Database Management Systems (DBMS)**
+**Course:** Database Management Systems (DBMS)
 
-Department of Computer Science and Engineering
+**Department:** Computer Science and Engineering
 
 ---
 
-## 📄 License
+## Future Enhancements
 
-This project is developed for academic purposes as part of the DBMS course.
+* Barcode and QR-based book management
+* Email notifications for due dates
+* Online reservation system
+* Digital library integration
+* Advanced analytics and reporting
+* Mobile-friendly interface
+
+---
+
+## License
+
+This project has been developed exclusively for academic purposes as part of the Database Management Systems course.
