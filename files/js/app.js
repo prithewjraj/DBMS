@@ -46,9 +46,18 @@
   }
 
   /**
-   * Wires up the login form: validates on submit, shows a brief
-   * loading state on the submit button, then simulates a successful
-   * sign-in (no backend is connected in this UI-only build).
+   * Demo credential store for this UI-only build (no backend is connected).
+   * In the full DBMS-backed version this check would be a server call.
+   */
+  var DEMO_ACCOUNT = {
+    email: 'amrita@gmail.com',
+    password: 'Amrita'
+  };
+
+  /**
+   * Wires up the login form: validates on submit, checks the demo
+   * credentials, shows a brief loading state on the submit button,
+   * then either signs in or reports an invalid attempt.
    */
   function initLoginForm() {
     const form = document.getElementById('loginForm');
@@ -83,11 +92,25 @@
       window.setTimeout(function () {
         submitBtn.classList.remove('is-loading');
         submitBtn.disabled = false;
-        showToast('Signed in successfully. Redirecting to your dashboard…', 'success');
-        // In the full build this would navigate to dashboard.html
-        window.setTimeout(function () {
-          window.location.href = 'dashboard.html';
-        }, 900);
+
+        const emailMatches = emailField.value.trim().toLowerCase() === DEMO_ACCOUNT.email;
+        const passwordMatches = passwordField.value === DEMO_ACCOUNT.password;
+
+        if (emailMatches && passwordMatches) {
+          if (window.AppUI && window.AppUI.rememberSession) {
+            window.AppUI.rememberSession(document.getElementById('rememberMe').checked);
+          }
+          showToast('Signed in. Redirecting to your dashboard…', 'success');
+          window.setTimeout(function () {
+            window.location.href = 'dashboard.html';
+          }, 700);
+        } else {
+          setFieldValidity(emailField, false);
+          setFieldValidity(passwordField, false);
+          showToast('That email or password doesn\'t match our records.', 'danger');
+          passwordField.value = '';
+          passwordField.focus();
+        }
       }, 900);
     });
 
@@ -167,13 +190,45 @@
     });
   }
 
+  /**
+   * Minimal session helper for this front-end-only build. Stores a flag
+   * and the signed-in user's display info so other pages (dashboard, etc.)
+   * can greet the person and guard against being viewed pre-login.
+   */
+  function rememberSession(persist) {
+    const store = persist ? window.localStorage : window.sessionStorage;
+    store.setItem('athenaeum_session', JSON.stringify({
+      name: 'Amrita Nair',
+      email: DEMO_ACCOUNT.email,
+      role: (document.querySelector('input[name="role"]:checked') || {}).value || 'admin',
+      signedInAt: new Date().toISOString()
+    }));
+  }
+
+  function getSession() {
+    const raw = window.localStorage.getItem('athenaeum_session') || window.sessionStorage.getItem('athenaeum_session');
+    try {
+      return raw ? JSON.parse(raw) : null;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function clearSession() {
+    window.localStorage.removeItem('athenaeum_session');
+    window.sessionStorage.removeItem('athenaeum_session');
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     initPasswordToggle();
     initLoginForm();
     initForgotPassword();
   });
 
-  // Expose showToast for reuse by other page scripts.
+  // Expose shared helpers for reuse by other page scripts.
   window.AppUI = window.AppUI || {};
   window.AppUI.showToast = showToast;
+  window.AppUI.rememberSession = rememberSession;
+  window.AppUI.getSession = getSession;
+  window.AppUI.clearSession = clearSession;
 })();
