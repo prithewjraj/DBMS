@@ -159,7 +159,3 @@ git clone https://github.com/your-username/library-management-system.git
 * Mobile-friendly interface
 
 ---
-
-## License
-
-This project has been developed exclusively for academic purposes as part of the Database Management Systems course.
