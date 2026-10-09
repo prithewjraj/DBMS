@@ -1,16 +1,10 @@
-# 📚 Athenaeum — Library Management System
+#  Athenaeum — Library Management System
 
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-blue.svg?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Java](https://img.shields.io/badge/Java-17%2B-orange.svg?logo=openjdk&logoColor=white)](https://openjdk.org/)
-[![Apache Tomcat](https://img.shields.io/badge/Apache%20Tomcat-9%2B-yellow.svg?logo=apachetomcat&logoColor=white)](https://tomcat.apache.org/)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple.svg?logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 An enterprise-grade, relational-database-driven **Library Management System (LMS)** designed to digitize, streamline, and centralize academic library operations. Backed by a rigorously normalized PostgreSQL database (1NF &rarr; 2NF &rarr; 3NF &rarr; BCNF), a Java Servlets & JDBC backend deployed on Apache Tomcat, and a sleek, modern responsive web dashboard.
 
 ---
 
-## 💡 Overview
 
 Manual library management and spreadsheet-based workflows suffer from lost books, inventory discrepancies, manual calculation errors for overdue penalties, and concurrent update conflicts. **Athenaeum** resolves these challenges by providing:
 
@@ -21,7 +15,7 @@ Manual library management and spreadsheet-based workflows suffer from lost books
 
 ---
 
-## 🏗️ Repository Architecture
+##  Repository Architecture
 
 ```
 ├── backend/                  # Java Servlets & JDBC Web API (Apache Tomcat)
@@ -52,7 +46,7 @@ Manual library management and spreadsheet-based workflows suffer from lost books
 
 ---
 
-## 🗄️ Relational Schema & Normalization
+##  Relational Schema & Normalization
 
 The database architecture is normalized up to **Boyce-Codd Normal Form (BCNF)** to eliminate redundancy and prevent insertion, update, and deletion anomalies.
 
@@ -81,7 +75,7 @@ MEMBER (1) ───────┘      └── LIBRARIAN (1)
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### 1. Database Initialization (PostgreSQL)
 
@@ -131,7 +125,7 @@ http://localhost:8081/backend/login.html
 
 ---
 
-## 💻 Standalone Console Application
+##  Standalone Console Application
 
 In addition to the web client, a standalone Java console application is provided under `cli-app/`:
 
@@ -142,6 +136,3 @@ java Main
 ```
 
 ---
-
-## 📄 License
-This project is open source and available under the [MIT License](LICENSE).
