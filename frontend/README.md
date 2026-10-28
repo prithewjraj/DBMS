@@ -16,8 +16,10 @@ A responsive, modern web interface for the Library Management System built with 
 
 | Page | File | Description |
 | :--- | :--- | :--- |
-| **Authentication** | `login.html` | Role selector (Admin, Librarian, Student), input validation, demo fallback |
-| **Dashboard** | `dashboard.html` | Summary metric cards, circulation trend line chart, category doughnut chart |
+| **Authentication** | `login.html` | Role selector (Admin, Librarian, Student), demo profiles, role-based routing |
+| **Librarian Dashboard** | `dashboard.html` | Circulation metrics, borrowing trends, active operations, and quick actions |
+| **Student Dashboard** | `student-dashboard.html` | Search catalogue, view active loans & due dates, reservations, and fee status |
+| **Admin Dashboard** | `admin-dashboard.html` | System statistics, management links (books, members, librarians), staff registry |
 | **Book Catalog** | `books.html` | Catalog table with search, category filtering, and "Add Book" modal |
 | **Member Directory** | `members.html` | Patron list (Student/Faculty) with status filtering and "Add Member" modal |
 | **Issue Books** | `issue-book.html` | Book checkout form with live inventory checks and active loan table |

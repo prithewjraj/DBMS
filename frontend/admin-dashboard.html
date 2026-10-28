@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <title>Admin Dashboard · Athenaeum Library Management System</title>
+  <meta name="description" content="Athenaeum administrative control panel — system statistics, manage books, members, librarians, circulation, fines, and reports.">
+
+  <!-- Self-hosted fonts, Bootstrap and icons — no CDN calls, works fully offline -->
+  <link rel="stylesheet" href="assets/vendor/inter/inter.css">
+  <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.css">
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+
+  <style>
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.12);
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+    .mgmt-card {
+      display: flex;
+      flex-direction: column;
+      padding: 1.25rem;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--color-text);
+      transition: transform var(--duration-fast) var(--ease-standard),
+                  box-shadow var(--duration-fast) var(--ease-standard),
+                  border-color var(--duration-fast) var(--ease-standard);
+      height: 100%;
+    }
+    .mgmt-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-primary);
+      color: var(--color-text);
+    }
+    .mgmt-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 0.85rem;
+    }
+    .mgmt-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mgmt-desc {
+      font-size: 12.5px;
+      color: var(--color-muted);
+      line-height: 1.45;
+      margin-bottom: 0.85rem;
+      flex-grow: 1;
+    }
+    .mgmt-action {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-shell" id="appShell">
+
+    <!-- Mobile sidebar backdrop -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="sidebar-brand-mark"><i class="bi bi-book-half"></i></span>
+        <span class="sidebar-brand-label">Athenaeum</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Administration</div>
+        <a href="#overview" class="nav-item active">
+          <i class="bi bi-shield-check"></i>
+          <span class="nav-label">Admin Dashboard</span>
+        </a>
+
+        <div class="sidebar-section-label">Management Links</div>
+        <a href="books.html" class="nav-item">
+          <i class="bi bi-journal-bookmark"></i>
+          <span class="nav-label">Manage Books</span>
+        </a>
+        <a href="members.html" class="nav-item">
+          <i class="bi bi-people"></i>
+          <span class="nav-label">Manage Members</span>
+        </a>
+        <a href="#staffSection" class="nav-item">
+          <i class="bi bi-person-badge"></i>
+          <span class="nav-label">Manage Librarians</span>
+        </a>
+        <a href="issue-book.html" class="nav-item">
+          <i class="bi bi-box-arrow-up-right"></i>
+          <span class="nav-label">Borrowing / Issue</span>
+        </a>
+        <a href="return-book.html" class="nav-item">
+          <i class="bi bi-box-arrow-in-down-left"></i>
+          <span class="nav-label">Returns Check-in</span>
+        </a>
+        <a href="reservations.html" class="nav-item">
+          <i class="bi bi-bookmark-star"></i>
+          <span class="nav-label">Reservations</span>
+          <span class="badge-count">6</span>
+        </a>
+        <a href="fines.html" class="nav-item">
+          <i class="bi bi-cash-coin"></i>
+          <span class="nav-label">Fines &amp; Dues</span>
+        </a>
+
+        <div class="sidebar-section-label">Governance &amp; Reports</div>
+        <a href="reports.html" class="nav-item">
+          <i class="bi bi-bar-chart-line"></i>
+          <span class="nav-label">Reports &amp; Analytics</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+          <i class="bi bi-gear"></i>
+          <span class="nav-label">System Settings</span>
+        </a>
+        <a href="#" class="nav-item" data-action="logout">
+          <i class="bi bi-box-arrow-left"></i>
+          <span class="nav-label">Logout</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" style="background:#2563EB" data-user-initials>AU</div>
+          <div class="sidebar-user-meta">
+            <div class="name" data-user-name>Admin User</div>
+            <div class="role text-primary" data-user-role><i class="bi bi-shield-lock me-1"></i>Administrator</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN COLUMN ================= -->
+    <div class="main-col">
+
+      <!-- Topbar -->
+      <header class="topbar">
+        <button class="sidebar-toggle-btn d-none d-lg-flex" id="sidebarCollapseBtn" aria-label="Collapse sidebar">
+          <i class="bi bi-layout-sidebar-inset"></i>
+        </button>
+        <button class="sidebar-toggle-btn d-lg-none" id="sidebarMobileBtn" aria-label="Open menu">
+          <i class="bi bi-list"></i>
+        </button>
+
+        <div class="topbar-search">
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Search system records, logs, ISBN, or patrons…" aria-label="Search">
+        </div>
+
+        <div class="topbar-actions">
+          <button class="dark-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+            <span class="knob"><i class="bi bi-moon-stars-fill" style="font-size:10px"></i></span>
+          </button>
+          <button class="topbar-icon-btn" aria-label="Notifications">
+            <i class="bi bi-bell"></i>
+            <span class="ping-dot"></span>
+          </button>
+
+          <div class="dropdown">
+            <button class="topbar-profile" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="topbar-profile-avatar" style="background:#2563EB" data-user-initials>AU</span>
+              <span class="d-none d-md-block text-start">
+                <span class="topbar-profile-name d-block" data-user-name>Admin User</span>
+                <span class="topbar-profile-role text-primary" data-user-role>Administrator</span>
+              </span>
+              <i class="bi bi-chevron-down" style="font-size:12px; color:var(--color-muted)"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm mt-2" style="border-radius:12px; border-color:var(--color-border)">
+              <li><a class="dropdown-item" href="profile.html"><i class="bi bi-person me-2"></i>Admin profile</a></li>
+              <li><a class="dropdown-item" href="reports.html"><i class="bi bi-bar-chart me-2"></i>Audit reports</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="#" data-action="logout"><i class="bi bi-box-arrow-left me-2"></i>Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page content -->
+      <main class="page-content" id="overview">
+
+        <div class="page-heading">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <h1>Administrator Control Center</h1>
+              <span class="admin-badge"><i class="bi bi-shield-check"></i> Full Privileges</span>
+            </div>
+            <p><span id="todayLabel">Today</span> · System-wide governance, library operations overview, and management directory.</p>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="reports.html" class="btn btn-outline-subtle"><i class="bi bi-download me-1"></i> Export Reports</a>
+            <a href="books.html" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Add Book</a>
+          </div>
+        </div>
+
+        <!-- Summary Statistics Grid -->
+        <div class="stat-grid mb-4">
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-icon tone-primary"><i class="bi bi-journal-bookmark"></i></span>
+              <span class="stat-trend up"><i class="bi bi-arrow-up-short"></i>4.2%</span>
+            </div>
+            <div class="stat-value" data-stat="total_books">12,480</div>
+            <div class="stat-label">Total catalog volumes</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-icon tone-secondary"><i class="bi bi-people"></i></span>
+              <span class="stat-trend up"><i class="bi bi-arrow-up-short"></i>5.6%</span>
+            </div>
+            <div class="stat-value" data-stat="total_members">3,214</div>
+            <div class="stat-label">Registered members</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-icon tone-accent"><i class="bi bi-person-badge"></i></span>
+              <span class="stat-trend up"><i class="bi bi-check2"></i> Active</span>
+            </div>
+            <div class="stat-value">2</div>
+            <div class="stat-label">Librarians &amp; Staff</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-icon tone-primary"><i class="bi bi-arrow-left-right"></i></span>
+              <span class="stat-trend up"><i class="bi bi-arrow-up-short"></i>6.8%</span>
+            </div>
+            <div class="stat-value" data-stat="issued_books">3,842</div>
+            <div class="stat-label">Active borrowings</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-icon tone-warning"><i class="bi bi-bookmark-star"></i></span>
+              <span class="stat-trend up"><i class="bi bi-arrow-up-short"></i>1.4%</span>
+            </div>
+            <div class="stat-value" data-stat="active_reservations">224</div>
+            <div class="stat-label">Pending reservations</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-icon tone-danger"><i class="bi bi-exclamation-triangle"></i></span>
+              <span class="stat-trend down"><i class="bi bi-arrow-down-short"></i>3.0%</span>
+            </div>
+            <div class="stat-value" data-stat="overdue_count">96</div>
+            <div class="stat-label">Overdue borrowings</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-icon tone-success"><i class="bi bi-cash-coin"></i></span>
+              <span class="stat-trend up"><i class="bi bi-arrow-up-short"></i>9.3%</span>
+            </div>
+            <div class="stat-value" data-stat="total_fines_collected">₹18,450</div>
+            <div class="stat-label">Total fine revenue</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-icon tone-success"><i class="bi bi-database-check"></i></span>
+              <span class="stat-trend up" style="color:var(--color-success)">BCNF</span>
+            </div>
+            <div class="stat-value">Healthy</div>
+            <div class="stat-label">PostgreSQL Database</div>
+          </div>
+        </div>
+
+        <!-- Management Links Section -->
+        <div class="mb-4">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+              <h2 style="font-size:1.15rem; font-weight:700; margin:0">System Management Links</h2>
+              <p class="text-muted mb-0" style="font-size:13px">Direct access to manage all operational modules, staff, and policies</p>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <!-- Manage Books -->
+            <div class="col-12 col-sm-6 col-lg-3">
+              <a href="books.html" class="mgmt-card">
+                <div class="mgmt-icon tone-primary" style="background:rgba(37,99,235,0.1); color:var(--color-primary)">
+                  <i class="bi bi-journal-bookmark"></i>
+                </div>
+                <div class="mgmt-title">
+                  <span>Manage Books</span>
+                  <i class="bi bi-arrow-right text-muted" style="font-size:13px"></i>
+                </div>
+                <div class="mgmt-desc">Add, edit, or archive catalog volumes, ISBNs, publishers, and categories.</div>
+                <div class="mgmt-action">Open catalog <i class="bi bi-chevron-right"></i></div>
+              </a>
+            </div>
+
+            <!-- Manage Members -->
+            <div class="col-12 col-sm-6 col-lg-3">
+              <a href="members.html" class="mgmt-card">
+                <div class="mgmt-icon tone-secondary" style="background:rgba(30,58,138,0.1); color:var(--color-secondary)">
+                  <i class="bi bi-people"></i>
+                </div>
+                <div class="mgmt-title">
+                  <span>Manage Members</span>
+                  <i class="bi bi-arrow-right text-muted" style="font-size:13px"></i>
+                </div>
+                <div class="mgmt-desc">Register students &amp; faculty, adjust borrowing privileges, update patron status.</div>
+                <div class="mgmt-action">Open directory <i class="bi bi-chevron-right"></i></div>
+              </a>
+            </div>
+
+            <!-- Manage Librarians -->
+            <div class="col-12 col-sm-6 col-lg-3">
+              <a href="#staffSection" class="mgmt-card">
+                <div class="mgmt-icon tone-accent" style="background:rgba(59,130,246,0.1); color:var(--color-accent)">
+                  <i class="bi bi-person-badge"></i>
+                </div>
+                <div class="mgmt-title">
+                  <span>Manage Librarians</span>
+                  <i class="bi bi-arrow-right text-muted" style="font-size:13px"></i>
+                </div>
+                <div class="mgmt-desc">Oversee library staff credentials, operational assignments, and role access.</div>
+                <div class="mgmt-action">View staff <i class="bi bi-chevron-right"></i></div>
+              </a>
+            </div>
+
+            <!-- Manage Borrowing -->
+            <div class="col-12 col-sm-6 col-lg-3">
+              <a href="issue-book.html" class="mgmt-card">
+                <div class="mgmt-icon tone-primary" style="background:rgba(37,99,235,0.1); color:var(--color-primary)">
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </div>
+                <div class="mgmt-title">
+                  <span>Manage Borrowing</span>
+                  <i class="bi bi-arrow-right text-muted" style="font-size:13px"></i>
+                </div>
+                <div class="mgmt-desc">Issue books to members, verify quota limits, and set customized loan due dates.</div>
+                <div class="mgmt-action">Circulation issue <i class="bi bi-chevron-right"></i></div>
+              </a>
+            </div>
+
+            <!-- Manage Returns -->
+            <div class="col-12 col-sm-6 col-lg-3">
+              <a href="return-book.html" class="mgmt-card">
+                <div class="mgmt-icon tone-success" style="background:rgba(16,185,129,0.1); color:var(--color-success)">
+                  <i class="bi bi-box-arrow-in-down-left"></i>
+                </div>
+                <div class="mgmt-title">
+                  <span>Returns &amp; Check-in</span>
+                  <i class="bi bi-arrow-right text-muted" style="font-size:13px"></i>
+                </div>
+                <div class="mgmt-desc">Process return check-ins, assess damage/delays, and calculate late fees.</div>
+                <div class="mgmt-action">Process return <i class="bi bi-chevron-right"></i></div>
+              </a>
+            </div>
+
+            <!-- Manage Fines -->
+            <div class="col-12 col-sm-6 col-lg-3">
+              <a href="fines.html" class="mgmt-card">
+                <div class="mgmt-icon tone-warning" style="background:rgba(245,158,11,0.1); color:var(--color-warning)">
+                  <i class="bi bi-cash-coin"></i>
+                </div>
+                <div class="mgmt-title">
+                  <span>Manage Fines</span>
+                  <i class="bi bi-arrow-right text-muted" style="font-size:13px"></i>
+                </div>
+                <div class="mgmt-desc">Track overdue penalties, record cash or digital settlements, and waive fees.</div>
+                <div class="mgmt-action">Fines ledger <i class="bi bi-chevron-right"></i></div>
+              </a>
+            </div>
+
+            <!-- Manage Reservations -->
+            <div class="col-12 col-sm-6 col-lg-3">
+              <a href="reservations.html" class="mgmt-card">
+                <div class="mgmt-icon tone-accent" style="background:rgba(59,130,246,0.1); color:var(--color-accent)">
+                  <i class="bi bi-bookmark-star"></i>
+                </div>
+                <div class="mgmt-title">
+                  <span>Manage Reservations</span>
+                  <i class="bi bi-arrow-right text-muted" style="font-size:13px"></i>
+                </div>
+                <div class="mgmt-desc">Inspect patron hold queues, allocate returned titles, and manage waitlists.</div>
+                <div class="mgmt-action">Reservations queue <i class="bi bi-chevron-right"></i></div>
+              </a>
+            </div>
+
+            <!-- Manage Reports -->
+            <div class="col-12 col-sm-6 col-lg-3">
+              <a href="reports.html" class="mgmt-card">
+                <div class="mgmt-icon tone-primary" style="background:rgba(37,99,235,0.1); color:var(--color-primary)">
+                  <i class="bi bi-bar-chart-line"></i>
+                </div>
+                <div class="mgmt-title">
+                  <span>System Reports</span>
+                  <i class="bi bi-arrow-right text-muted" style="font-size:13px"></i>
+                </div>
+                <div class="mgmt-desc">Audit circulation metrics, inventory depreciation, and export monthly CSV logs.</div>
+                <div class="mgmt-action">View reports <i class="bi bi-chevron-right"></i></div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Librarians & Staff Directory Section -->
+        <section id="staffSection" class="panel-card mb-4">
+          <div class="panel-card-header">
+            <div>
+              <h2>Librarians &amp; Staff Directory</h2>
+              <span class="subtitle">Authorized system administrators and circulation desk staff</span>
+            </div>
+            <button type="button" class="btn btn-sm btn-primary" id="addStaffBtn">
+              <i class="bi bi-person-plus me-1"></i> Add Staff Member
+            </button>
+          </div>
+
+          <div style="overflow-x:auto">
+            <table class="table-activity">
+              <thead>
+                <tr>
+                  <th>Staff Member</th>
+                  <th>Username / Email</th>
+                  <th>Contact Phone</th>
+                  <th>System Role</th>
+                  <th>Account Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="row-avatar" style="background:#2563EB; color:#fff">AU</span>
+                      <div>
+                        <strong>Admin User</strong>
+                        <div class="text-muted" style="font-size:12px">ID: #LIB-1001</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div><code>admin</code></div>
+                    <div class="text-muted" style="font-size:12px">admin@library.com</div>
+                  </td>
+                  <td>555-1000</td>
+                  <td><span class="badge" style="background:rgba(37,99,235,0.12); color:var(--color-primary); font-weight:600"><i class="bi bi-shield-lock me-1"></i>Administrator</span></td>
+                  <td><span class="badge-status returned">Active</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-subtle" onclick="alert('Admin User permissions are fixed for primary root administrator.')"><i class="bi bi-lock me-1"></i>Primary</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="row-avatar" style="background:#10B981; color:#fff">LS</span>
+                      <div>
+                        <strong>Lib Staff (Amrita Nair)</strong>
+                        <div class="text-muted" style="font-size:12px">ID: #LIB-2001</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div><code>librarian1</code></div>
+                    <div class="text-muted" style="font-size:12px">staff@library.com</div>
+                  </td>
+                  <td>555-2000</td>
+                  <td><span class="badge" style="background:rgba(16,185,129,0.12); color:var(--color-success); font-weight:600"><i class="bi bi-person-badge me-1"></i>Librarian</span></td>
+                  <td><span class="badge-status returned">Active</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-subtle" onclick="alert('Staff member permissions active. Manageable in PostgreSQL LIBRARIAN table.')"><i class="bi bi-pencil me-1"></i>Edit</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Charts: System Trends -->
+        <div class="chart-grid">
+          <div class="panel-card" style="margin-bottom:0">
+            <div class="chart-card-header">
+              <div>
+                <h2>Circulation Trend Overview</h2>
+                <span class="subtitle">System-wide loans vs returns (last 6 months)</span>
+              </div>
+            </div>
+            <div style="height:220px">
+              <canvas id="adminBorrowChart"></canvas>
+            </div>
+            <div class="chart-legend">
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#2563EB"></span>Issued</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#10B981"></span>Returned</span>
+            </div>
+          </div>
+
+          <div class="panel-card" style="margin-bottom:0">
+            <div class="chart-card-header">
+              <div>
+                <h2>Catalog Category Allocation</h2>
+                <span class="subtitle">Breakdown of 12,480 catalog volumes</span>
+              </div>
+            </div>
+            <div style="height:220px">
+              <canvas id="adminCategoryChart"></canvas>
+            </div>
+            <div class="chart-legend">
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#2563EB"></span>Fiction</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#3B82F6"></span>Science</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#93C5FD"></span>History</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#10B981"></span>Technology</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#F59E0B"></span>Philosophy</span>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Self-hosted Bootstrap Bundle + Chart.js -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/chartjs/chart.umd.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. Guard session
+      const session = window.AppUI && window.AppUI.getSession ? window.AppUI.getSession() : null;
+      if (!session) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Populate user info
+      const adminName = session.name || 'Admin User';
+      const initials = adminName.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase();
+      document.querySelectorAll('[data-user-name]').forEach(el => el.textContent = adminName);
+      document.querySelectorAll('[data-user-initials]').forEach(el => el.textContent = initials);
+      document.querySelectorAll('[data-user-role]').forEach(el => el.textContent = 'Administrator');
+
+      // 2. Sidebar controls
+      const shell = document.getElementById('appShell');
+      const collapseBtn = document.getElementById('sidebarCollapseBtn');
+      const mobileBtn = document.getElementById('sidebarMobileBtn');
+      const overlay = document.getElementById('sidebarOverlay');
+
+      if (collapseBtn) collapseBtn.addEventListener('click', () => shell.classList.toggle('sidebar-collapsed'));
+      if (mobileBtn) mobileBtn.addEventListener('click', () => shell.classList.add('sidebar-mobile-open'));
+      if (overlay) overlay.addEventListener('click', () => shell.classList.remove('sidebar-mobile-open'));
+
+      // 3. Dark mode toggle
+      const dmToggle = document.getElementById('darkModeToggle');
+      if (dmToggle) {
+        const stored = window.localStorage.getItem('athenaeum_theme');
+        if (stored === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          dmToggle.classList.add('is-dark');
+        }
+        dmToggle.addEventListener('click', function () {
+          const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+          if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+            window.localStorage.setItem('athenaeum_theme', 'light');
+            dmToggle.classList.remove('is-dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            window.localStorage.setItem('athenaeum_theme', 'dark');
+            dmToggle.classList.add('is-dark');
+          }
+        });
+      }
+
+      // 4. Logout
+      document.querySelectorAll('[data-action="logout"]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          if (window.AppUI && window.AppUI.clearSession) window.AppUI.clearSession();
+          window.location.href = 'login.html';
+        });
+      });
+
+      // 5. Today date
+      const todayLabel = document.getElementById('todayLabel');
+      if (todayLabel) {
+        todayLabel.textContent = new Date().toLocaleDateString(undefined, {
+          weekday: 'long',
+          month: 'long',
+          day: 'numeric'
+        });
+      }
+
+      // 6. Init Charts
+      if (typeof Chart !== 'undefined') {
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#6B7280';
+
+        const borrowCtx = document.getElementById('adminBorrowChart');
+        if (borrowCtx) {
+          new Chart(borrowCtx, {
+            type: 'line',
+            data: {
+              labels: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+              datasets: [
+                {
+                  label: 'Issued',
+                  data: [420, 486, 455, 512, 498, 560],
+                  borderColor: '#2563EB',
+                  backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                  tension: 0.35,
+                  fill: true,
+                  pointRadius: 3
+                },
+                {
+                  label: 'Returned',
+                  data: [390, 452, 430, 470, 465, 521],
+                  borderColor: '#10B981',
+                  backgroundColor: 'rgba(16, 185, 129, 0.06)',
+                  tension: 0.35,
+                  fill: true,
+                  pointRadius: 3
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: { grid: { color: '#F1F5F9' }, ticks: { stepSize: 150 } },
+                x: { grid: { display: false } }
+              }
+            }
+          });
+        }
+
+        const catCtx = document.getElementById('adminCategoryChart');
+        if (catCtx) {
+          new Chart(catCtx, {
+            type: 'doughnut',
+            data: {
+              labels: ['Fiction', 'Science', 'History', 'Technology', 'Philosophy'],
+              datasets: [{
+                data: [32, 22, 16, 20, 10],
+                backgroundColor: ['#2563EB', '#3B82F6', '#93C5FD', '#10B981', '#F59E0B'],
+                borderWidth: 0
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              cutout: '68%',
+              plugins: { legend: { display: false } }
+            }
+          });
+        }
+      }
+
+      // Add Staff Modal / Toast prompt
+      const addStaffBtn = document.getElementById('addStaffBtn');
+      if (addStaffBtn) {
+        addStaffBtn.addEventListener('click', function () {
+          const email = prompt('Enter new staff member email address:');
+          if (email && email.includes('@')) {
+            if (window.AppUI && window.AppUI.showToast) {
+              window.AppUI.showToast(`Invitation sent to ${email} with Librarian credentials.`, 'success');
+            }
+          }
+        });
+      }
+
+    })();
+  </script>
+</body>
+</html>
